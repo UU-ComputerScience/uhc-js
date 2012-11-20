@@ -113,6 +113,9 @@ foreign import js "%1.html(%2)"
   
 foreign import js "%1.hide()"
   hide :: JQuery -> IO ()
+  
+foreign import js "%1.empty()"
+  empty :: JQuery -> IO ()
 
 addClass :: JQuery -> String -> IO ()
 addClass j s = _addClass j (toJS s)
