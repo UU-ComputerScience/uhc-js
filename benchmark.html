@@ -7,31 +7,35 @@
     <script src="uhcjs.js"></script>
     <script src="ghcjs.primes.js"></script>
     <script type="text/javascript">
-    // var fib = new Benchmark.Suite;
+    var fib = new Benchmark.Suite;
 
-    // // add tests
-    // fib.add('fib.nativeJS', function() {
-    //   fibJS(30)
-    // })
+    // add tests
+    fib.add('fib.nativeJS', function() {
+      fibJS(30)
+    })
     // .add('fib.uhcJS', function() {
     //   fibUHCJS(30)
     // })
-    // // .add('String#indexOf', function() {
-    // //   'Hello World!'.indexOf('o') > -1;
-    // // })
-    // // .add('String#match', function() {
-    // //   !!'Hello World!'.match(/o/);
-    // // })
-    // // add listeners
-    // .on('cycle', function(event) {
-    //   console.log(event.target)
-    //   console.log(String(event.target));
+    .add('fib.ghcjs', function() {
+      h$run(h$runio(h$mainZCMainzimain), function(r) { h$run(h$runio(h$flushStdout), function(r) {}); });
+
+    })
+    // .add('String#indexOf', function() {
+    //   'Hello World!'.indexOf('o') > -1;
     // })
-    // .on('complete', function() {
-    //   console.log('Fastest is ' + this.filter('fastest').pluck('name'));
+    // .add('String#match', function() {
+    //   !!'Hello World!'.match(/o/);
     // })
-    // // run async
-    // .run({ 'async': false });
+    // add listeners
+    .on('cycle', function(event) {
+      console.log(event.target)
+      console.log(String(event.target));
+    })
+    .on('complete', function() {
+      console.log('Fastest is ' + this.filter('fastest').pluck('name'));
+    })
+    // run async
+    .run({ 'async': false });
 
 
     // var sum = new Benchmark.Suite;
@@ -40,7 +44,7 @@
     // sum.add('sum.nativeJS', function() {
     //   return 0
     // })
-    // .add('fib.uhcJS', function() {
+    // .add('sum.uhcJS', function() {
     //   sumUHCJS(100000)
     // })
     // // .add('String#indexOf', function() {
@@ -60,29 +64,31 @@
     // // run async
     // .run({ 'async': false });
 
-    var primes = new Benchmark.Suite;
+    // var primes = new Benchmark.Suite;
 
-    // add tests
-    primes.add('primes.nativeJS', function() {
-      return []
-    })
-    .add('primes.uhcJS', function() {
-      primesUHCJS(1700)
-    })
-    .add('primes.ghcjs', function() {
-        h$run(h$runio(h$mainZCMainzimain), function(r) { h$run(h$runio(h$flushStdout), function(r) {}); });
-    })
+    // // add tests
+    // primes.add('primes.nativeJS', function() {
+    //   return []
+    // })
+    // // .add('primes.uhcJS', function() {
+    // //   primesUHCJS(1700)
+    // // })
+    // .add('primes.ghcjs', function() {
+    //     h$run(h$runio(h$mainZCMainzimain), function(r) { h$run(h$runio(h$flushStdout), function(r) {}); });
+    // })
 
-    // add listeners
-    .on('cycle', function(event) {
-      console.log(event.target)
-      console.log(String(event.target));
-    })
-    .on('complete', function() {
-      console.log('Fastest is ' + this.filter('fastest').pluck('name'));
-    })
-    // run async
-    .run({ 'async': false });
+    // // add listeners
+    // .on('cycle', function(event) {
+    //   console.log(event.target)
+    //   console.log(String(event.target));
+    // })
+    // .on('complete', function() {
+    //   console.log('Fastest is ' + this.filter('fastest').pluck('name'));
+    // })
+    // // run async
+    // .run({ 'async': false });
+
+
 
 
     </script>
