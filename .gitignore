@@ -2,8 +2,6 @@
 EHC
 *.core*
 *.hi
-*.html
-*.js
 *.mjs
 haskell-jscript-libraries/
 *.tex

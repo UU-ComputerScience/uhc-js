@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>GHC-JS Benchmarks</title>
+    <script src="benchmark.js"></script>
+    <script src="uhcjs.js"></script>
+    <script type="text/javascript">
+    function fibJS(n) {
+      if (n == 1) {
+        return 1
+      } else if (n == 2) {
+        return 2
+      } else {
+        return (fibJS(n-2) + fibJS(n-1))
+      }
+    }
+    </script>
+    <script type="text/javascript">
+    var fib = new Benchmark.Suite;
+
+    // add tests
+    fib.add('fib.nativeJS', function() {
+      fibJS(30)
+    })
+    .add('fib.uhcJS', function() {
+      fibUHCJS()
+    })
+    // .add('String#indexOf', function() {
+    //   'Hello World!'.indexOf('o') > -1;
+    // })
+    // .add('String#match', function() {
+    //   !!'Hello World!'.match(/o/);
+    // })
+    // add listeners
+    .on('cycle', function(event) {
+      console.log(event.target)
+      console.log(String(event.target));
+    })
+    .on('complete', function() {
+      console.log('Fastest is ' + this.filter('fastest').pluck('name'));
+    })
+    // run async
+    .run({ 'async': false });
+    </script>
+  </head>
+  <body>
+    
+  </body>
+</html>
