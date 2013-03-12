@@ -2,9 +2,11 @@ module UHCJS where
 
 import Functions
 
-fib30 = fib 30
+fib' x = case fib x of
+            0 -> 0
+            n -> n
 
 foreign export js "fibUHCJS"
-  fib30 :: Int
+  fib' :: Int -> Int
 
 main = return ()
