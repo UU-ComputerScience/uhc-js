@@ -1,4 +1,4 @@
-module Functions (fib, primes) where
+module Functions (fib, primes, sumNonStrict, sumStrict) where
 
 import           Data.List ( foldl' )
                 
@@ -7,14 +7,15 @@ fib 1 = 1
 fib 2 = 2
 fib n = fib (n-2) + fib (n-1)
 
-primes :: Int -> [Int]
-primes n = take n primesEU
 
-sumNonStrict :: Int
-sumNonStrict = foldl (+) 0 [1..1000000]
+sumNonStrict :: Int -> Int
+sumNonStrict m = foldl (+) 0 [1..m]
 
-sumStrict :: Int
-sumStrict = foldl' (+) 0 [1..1000000]
+sumStrict :: Int -> Int
+sumStrict m = foldl' (+) 0 [1..m]
+
+primes :: Int -> Int
+primes n = sum $ take n primesEU
 
 primesEU = 2 : eulers [3,5..] where
   eulers (p:xs) = p : eulers (xs `minus` map (p*) (p:xs))

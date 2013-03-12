@@ -9,4 +9,10 @@ fib' x = case fib x of
 foreign export js "fibUHCJS"
   fib' :: Int -> Int
 
+foreign export js "sumUHCJS"
+  sumStrict :: Int -> Int
+
+foreign export js "primesUHCJS"
+  primes :: Int -> Int
+
 main = return ()
