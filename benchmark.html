@@ -5,95 +5,122 @@
     <script src="benchmark.js"></script>
     <script src="nativejs.js"></script>
     <script src="uhcjs.js"></script>
-    <script src="ghcjs.primes.js"></script>
     <script type="text/javascript">
-    var fib = new Benchmark.Suite;
+    function loadScript(url, callback)
+    {
+        // adding the script tag to the head as suggested before
+       var head = document.getElementsByTagName('head')[0];
+       var script = document.createElement('script');
+       script.type = 'text/javascript';
+       script.src = url;
 
-    // add tests
-    fib.add('fib.nativeJS', function() {
-      fibJS(30)
-    })
-    // .add('fib.uhcJS', function() {
-    //   fibUHCJS(30)
-    // })
-    .add('fib.ghcjs', function() {
-      h$run(h$runio(h$mainZCMainzimain), function(r) { h$run(h$runio(h$flushStdout), function(r) {}); });
+       // then bind the event to the callback function 
+       // there are several events for cross browser compatibility
+       script.onreadystatechange = callback;
+       script.onload = callback;
 
-    })
-    // .add('String#indexOf', function() {
-    //   'Hello World!'.indexOf('o') > -1;
-    // })
-    // .add('String#match', function() {
-    //   !!'Hello World!'.match(/o/);
-    // })
-    // add listeners
-    .on('cycle', function(event) {
-      console.log(event.target)
-      console.log(String(event.target));
-    })
-    .on('complete', function() {
-      console.log('Fastest is ' + this.filter('fastest').pluck('name'));
-    })
-    // run async
-    .run({ 'async': false });
+       // fire the loading
+       head.appendChild(script);
+    }
 
 
-    // var sum = new Benchmark.Suite;
+    var runFib    = false
+    var runSum    = true
+    var runPrimes = false
 
-    // // add tests
-    // sum.add('sum.nativeJS', function() {
-    //   return 0
-    // })
-    // .add('sum.uhcJS', function() {
-    //   sumUHCJS(100000)
-    // })
-    // // .add('String#indexOf', function() {
-    // //   'Hello World!'.indexOf('o') > -1;
-    // // })
-    // // .add('String#match', function() {
-    // //   !!'Hello World!'.match(/o/);
-    // // })
-    // // add listeners
-    // .on('cycle', function(event) {
-    //   console.log(event.target)
-    //   console.log(String(event.target));
-    // })
-    // .on('complete', function() {
-    //   console.log('Fastest is ' + this.filter('fastest').pluck('name'));
-    // })
-    // // run async
-    // .run({ 'async': false });
+    if (runFib) {
+        loadScript("ghcjs.fib30.js", function() {
+            var fib = new Benchmark.Suite;
 
-    // var primes = new Benchmark.Suite;
+            // add tests
+            fib.add('fib.nativeJS', function() {
+              fibJS(30)
+            })
+            .add('fib.uhcJS', function() {
+              fibUHCJS(30)
+            })
+            .add('fib.ghcjs', function() {
+              h$run(h$runio(h$mainZCMainzimain), function(r) { h$run(h$runio(h$flushStdout), function(r) {}); });
+            })
+            // add listeners
+            .on('cycle', function(event) {
+              console.log(event.target)
+              console.log(String(event.target));
+            })
+            .on('complete', function() {
+              console.log('Fastest is ' + this.filter('fastest').pluck('name'));
+            })
+            // run async
+            .run({ 'async': false });
+        })
+    }
 
-    // // add tests
-    // primes.add('primes.nativeJS', function() {
-    //   return []
-    // })
-    // // .add('primes.uhcJS', function() {
-    // //   primesUHCJS(1700)
-    // // })
-    // .add('primes.ghcjs', function() {
-    //     h$run(h$runio(h$mainZCMainzimain), function(r) { h$run(h$runio(h$flushStdout), function(r) {}); });
-    // })
+    if (runSum) {
+        console.log("loading sum");
+        loadScript("ghcjs.sum.js", function() {
+            var sumB = new Benchmark.Suite;
 
-    // // add listeners
-    // .on('cycle', function(event) {
-    //   console.log(event.target)
-    //   console.log(String(event.target));
-    // })
-    // .on('complete', function() {
-    //   console.log('Fastest is ' + this.filter('fastest').pluck('name'));
-    // })
-    // // run async
-    // .run({ 'async': false });
+            // // add tests
 
+            sumB = sumB.add('sum.ghcjs', function() {
+                var h$mainZCZCMainzimain = h$static_fun(h$mainZCZCMainzimain_e);
 
+                h$main(h$mainZCMainzimain);
+
+            })
+            .add('sum.nativeJS', function() {
+              sum(numbers(1,100000))
+            })
+            // .add('sum.uhcJS', function() {
+            //   sumUHCJS(100000)
+            // })
+            // add listeners
+            .on('cycle', function(event) {
+              console.log(event.target)
+              console.log(String(event.target));
+            })
+            .on('complete', function() {
+              console.log('Fastest is ' + this.filter('fastest').pluck('name'));
+            })
+
+            console.log("Running Sum")
+            // run async
+            sumB.run({ 'async': false });
+        })
+    }
+
+    if (runPrimes) {
+        loadScript("ghcjs.primes.js", function() {
+            var primes = new Benchmark.Suite;
+
+            // add tests
+            primes.add('primes.nativeJS', function() {
+              // sum()
+            })
+            .add('primes.uhcJS', function() {
+              primesUHCJS(1700)
+            })
+            // .add('primes.ghcjs', function() {
+            //     h$run(h$runio(h$mainZCMainzimain), function(r) { h$run(h$runio(h$flushStdout), function(r) {}); });
+            // })
+
+            // add listeners
+            .on('cycle', function(event) {
+              console.log(event.target)
+              console.log(String(event.target));
+            })
+            .on('complete', function() {
+              console.log('Fastest is ' + this.filter('fastest').pluck('name'));
+            })
+            // run async
+            .run({ 'async': false });
+        })
+    }
 
 
     </script>
   </head>
   <body>
-    
+    <div id="output"></div>
   </body>
 </html>

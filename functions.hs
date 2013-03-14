@@ -1,6 +1,7 @@
 module Functions (fib, primes, sumNonStrict, sumStrict) where
 
 import           Data.List ( foldl' )
+import Data.Ord
                 
 fib :: Int -> Int
 fib 1 = 1
