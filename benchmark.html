@@ -5,6 +5,7 @@
     <script src="benchmark.js"></script>
     <script src="nativejs.js"></script>
     <script src="uhcjs.js"></script>
+    <script src="fay.js"></script>
     <script type="text/javascript">
     function loadScript(url, callback)
     {
@@ -23,9 +24,19 @@
        head.appendChild(script);
     }
 
+    function runFay(f) {
+        var main = new Fay();
+        var x = main[f]
+        do {
+            x = x.force()
+        }
+        while (typeof(x) != "number" )
+        return x
+    }
+
 
     var runFib    = false
-    var runSum    = true
+    var runSum    = false
     var runPrimes = false
 
     if (runFib) {
@@ -36,11 +47,14 @@
             fib.add('fib.nativeJS', function() {
               fibJS(30)
             })
-            .add('fib.uhcJS', function() {
-              fibUHCJS(30)
-            })
+            // .add('fib.uhcJS', function() {
+            //   fibUHCJS(30)
+            // })
             .add('fib.ghcjs', function() {
-              h$run(h$runio(h$mainZCMainzimain), function(r) { h$run(h$runio(h$flushStdout), function(r) {}); });
+              h$main(h$mainZCMainzimain);
+            })
+            .add('fib.fay', function() {
+                runFay('Fay$fibTest')
             })
             // add listeners
             .on('cycle', function(event) {
@@ -60,13 +74,10 @@
         loadScript("ghcjs.sum.js", function() {
             var sumB = new Benchmark.Suite;
 
-            // // add tests
+            // add tests
 
             sumB = sumB.add('sum.ghcjs', function() {
-                var h$mainZCZCMainzimain = h$static_fun(h$mainZCZCMainzimain_e);
-
                 h$main(h$mainZCMainzimain);
-
             })
             .add('sum.nativeJS', function() {
               sum(numbers(1,100000))
@@ -74,6 +85,9 @@
             // .add('sum.uhcJS', function() {
             //   sumUHCJS(100000)
             // })
+            .add('sum.fay', function() {
+                runFay('Fay$sumTest')
+            })
             // add listeners
             .on('cycle', function(event) {
               console.log(event.target)
@@ -95,15 +109,17 @@
 
             // add tests
             primes.add('primes.nativeJS', function() {
-              // sum()
+              return 0
             })
-            .add('primes.uhcJS', function() {
-              primesUHCJS(1700)
-            })
-            // .add('primes.ghcjs', function() {
-            //     h$run(h$runio(h$mainZCMainzimain), function(r) { h$run(h$runio(h$flushStdout), function(r) {}); });
+            // .add('primes.uhcJS', function() {
+            //   primesUHCJS(1700)
             // })
-
+            // .add('primes.ghcjs', function() {
+            //     h$main(h$mainZCMainzimain);
+            // })
+            .add('primes.fay', function() {
+                runFay('Fay$primesTest')
+            })
             // add listeners
             .on('cycle', function(event) {
               console.log(event.target)

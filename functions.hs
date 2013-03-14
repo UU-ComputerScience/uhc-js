@@ -1,7 +1,7 @@
 module Functions (fib, primes, sumNonStrict, sumStrict) where
 
-import           Data.List ( foldl' )
-import Data.Ord
+--import           Data.List ( foldl' )
+import Prelude hiding (EQ, LT, GT, compare)
                 
 fib :: Int -> Int
 fib 1 = 1
@@ -13,7 +13,7 @@ sumNonStrict :: Int -> Int
 sumNonStrict m = foldl (+) 0 [1..m]
 
 sumStrict :: Int -> Int
-sumStrict m = foldl' (+) 0 [1..m]
+sumStrict m = foldl (+) 0 [1..m]
 
 primes :: Int -> Int
 primes n = sum $ take n primesEU
@@ -33,3 +33,10 @@ union (x:xs) (y:ys) = case (compare x y) of
            GT -> y : union (x:xs)  ys
 union  xs     []    = xs
 union  []     ys    = ys
+
+data Ord' = LT | EQ | GT
+
+compare :: Int -> Int -> Ord'
+compare x y | x < y  = LT
+						| x == y = EQ 
+						| x > y  = GT
