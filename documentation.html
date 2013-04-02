@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> 
+  <title>Documentation / User Guide - Utrecht Haskell Compiler: JavaScript back end</title>
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" media="all" />
+  <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.min.css" media="all" />
+  <link rel="stylesheet" type="text/css" href="css/prettify.css" media="all" />
+  <link rel="stylesheet" type="text/css" href="css/application.css" media="all" />
+  <!-- <link rel="stylesheet" type="text/css" href="syntax.css" media="all" /> -->
+  <!-- <link rel="stylesheet" type="text/css" href="style.css" media="all" /> -->
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </a>
+        
+        <a class="brand" href="#"><img src="images/uhc-logo.png" alt="" title=""/></a>
+        <div class="nav-collapse">
+          <ul class="nav">
+            
+              
+              
+              <li class="">
+                <a href="/uhc-js/">Home</a>
+              </li>
+            
+              
+              
+                
+              
+              <li class="active">
+                <a href="/uhc-js/documentation.html">Documentation</a>
+              </li>
+            
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <div id="header">
+      <h1>Documentation / User Guide</h1>
+    </div>
+
+    <div id="body">
+      <div class='container'>
+  <div class='row'>
+  <div class='span3 bs-docs-sidebar'>
+    <ul class='nav nav-list bs-docs-sidenav' data-offset-top='85' data-spy='affix'>
+
+          <!-- <li><a href="#getting_started">Getting Started</a></li><li><a href="#communicating_with_javascript">Communicating with JavaScript</a></li><li class="active"><a href="#examples__practice">Examples / Practice</a></li> -->
+    </ul>
+  </div>
+  <div class='span9 content'>
+    <h2 id='getting_started'>Getting Started</h2>
+
+<p>This page contains documentation specific to the JavaScript backend. To learn more of the UHC please look at the <a href='http://www.cs.uu.nl/wiki/bin/view/Ehc/Documentation'>extensive documentation</a>.</p>
+
+<h3 id='installation_of_uhc'>Installation of UHC</h3>
+
+<p>Clone the latest version of the JavaScript branch of UHC. This is somewhat risky but new features will be found here first.</p>
+
+<p>Make sure you have the dependencies, also make sure you have GHC installed:</p>
+<pre class='prettyprint lang-bsh'>
+cabal install uulib uuagc
+</pre>
+<p>Now build the UHC:</p>
+<pre class='prettyprint lang-bsh linenums'>
+$> cd somewhere
+$> git clone git://github.com/UU-ComputerScience/uhc.git
+$> cd uhc
+$> git checkout js
+$> cd EHC
+$> autoconf
+$> ./configure
+$> make uhc
+</pre>
+<p>Optionally perform a <code>make install</code>.</p>
+
+<h3 id='compiling_a_program'>Compiling a program</h3>
+
+<p>Compiling happens by calling UHC with the <code>-tjs</code> flag.</p>
+<pre class='prettyprint lang-bsh'>
+uhc -tjs Main.hs
+</pre>
+<p>This will compile Main.hs and generate a <code>.js</code> file for each import you made, as well as the main module. It will also create a file <code>Main.html</code> for you that contains a bare-bone HTML template including the references to the generated JavaScript code.</p>
+
+<p>If you want the UHC to generate a single JavaScript file you can add the following parameter: <code>-O,2</code>. It will enable whole-program optimisation and output all JavaScript to the file <code>Main.js</code>.</p>
+
+<p>As we do not yet have full Cabal support we currently resort to makefiles. (If someone wants to convert this to <a href='http://hackage.haskell.org/package/shake'>shake</a>, please go ahead!) For an explanation for how the automatic inclusion works see <a href='#automatically_generating_import_path_directives'>Automatically generating import path directives</a>.</p>
+<pre class='prettyprint linenums'>
+IMPORTS = $(shell ./libs.hs)
+UHC = /your/path/to/UHC
+COMPILER = ${UHC} ${IMPORTS} --import-path=$any_libraries_you_use$ -tjs -O,2
+
+all: build
+
+build: 
+	${COMPILER} main.hs
+
+.PHONY clean:
+	rm `find . -d -name "*.core*"`
+	rm `find . -d -name "*.hi*"`
+</pre>
+<h2 id='communicating_with_javascript'>Communicating with JavaScript</h2>
+
+<p>We offer several bindings to JavaScript, jQuery, and BackBone. They can be found in the <a href='https://github.com/UU-ComputerScience/uhc-js'>UHC-JavaScript</a> library.</p>
+
+<h3 id='types'>Types</h3>
+
+<p>When writing the <code>import</code> and <code>export</code> declarations you are yourself responsible for choosing the right types. This means that exposing a Haskell function that returns a Haskell datatype will give you exactly that: the Runtime representation of the Haskell datatype. Everything except for Ints are implemented as Haskell</p>
+
+<h3 id='importing_and_exporting_from_and_to_javascript'>Importing and exporting from and to JavaScript</h3>
+
+<p>We can import functions from the JavaScript world in the following manner. Note the use of the <code>.</code> and the numbered arguments. In this case we import the <code>substr</code> function that works on strings.</p>
+<pre class='prettyprint linenums lang-hs'>
+foreign import js "%1.substr(%2, %3)"
+  subStr :: JSString -> Int -> Int -> JSString
+</pre>
+<p>You can also replace the <code>%2, %3</code> by <code>%*</code>, it will then put all not explicitly named parameters there.</p>
+<pre class='prettyprint linenums lang-hs'>
+foreign import js "%1.substr(%*)"
+  subStr :: JSString -> Int -> Int -> JSString
+</pre>
+<h3 id='conversion_of_objects'>Conversion of objects</h3>
+
+<p>Perhaps one the most common things is converting between Haskell&#8217;s <code>String</code> and the native JavaScript String, which has the type <code>JSString</code>. Beware of the fact that this is an expensive operation and therefore should be used as little as possible.</p>
+
+<p>We provide the following class functions: <code>toJS</code> and <code>fromJS</code> that will convert a value from one world to the other. These do not work for general Haskell data-types yet. However, there is work underway to provide a generic function that will convert any Haskell record to a JavaScript object.</p>
+
+<p>In the mean time you can use <code>toObj</code>. This will convert Haskell records to JavaScript objects but isn&#8217;t able to convert fields of type <code>a -&gt; b</code>.</p>
+
+<h2 id='examples__practice'>Examples / Practice</h2>
+
+<p>This is the list of currently active UHC-JS enabled projects:</p>
+
+<ul>
+<li>JCU-HS (<a href='http://jcu.chrisdone.com/login'>demo</a>, <a href='http://alessandrovermeulen.me/2012/01/26/getting-rid-of-javascript-with-haskell'>announce</a>)</li>
+</ul>
+
+<h3 id='installation_script_for_jcuhs'>Installation script for JCU-HS</h3>
+
+<p>An installation script for installing the JCU app together with its dependencies is available from <a href='https://gist.github.com/1902090' title='A Ruby Script to install JCU and dependencies.'>this gist</a>. Currently the script does <strong>not</strong> build nor install UHC for you.</p>
+
+<p>If you trust us you may run the following command directly from your shell. It will run the installer in your current working directory:</p>
+<pre class='prettyprint linenums lang-bash'>ruby &lt;(curl -s https://raw.github.com/gist/1902090/0588a1a1e5a7bb8935ee9afdd7d96949abbe7ff5/install.rb)</pre>
+<p>Follow the on screen instructions when running the installer.</p>
+
+<h2 id='misc'>Misc.</h2>
+
+<h3 id='automatically_generating_import_path_directives'>Automatically generating import path directives</h3>
+
+<p>With the following Haskell script you can easily add libraries by adding a symlink to the <code>lib/</code> dir pointing to the source directory of your library.</p>
+<pre class='prettyprint linenums lang-hs'>#! /usr/bin/env runhaskell
+-- File: libs.hs
+module Main where
+
+import Data.List        (intercalate)
+import System.Directory (getDirectoryContents, canonicalizePath)
+  
+main = do
+  libs        &lt;- getDirectoryContents &quot;lib&quot;
+  let libs'   =  [ &quot;lib/&quot; ++ x | x &lt;- libs, head x /= '.']
+  libs''      &lt;- mapM canonicalizePath libs'
+  let libs''' =  unwords $ map (&quot;--import-path=&quot; ++) libs'' 
+  putStrLn libs'''</pre>
+  </div>
+  </div>
+</div>
+    </div>
+    <div id="banners"></div>
+  </div>
+  <script src="js/jquery-1.8.0.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  
+  <script type="text/javascript" src="js/prettify.js"></script>
+  <script type="text/javascript" src="js/lang-hs.js"></script>
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-28927322-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+  <script type="text/javascript">
+  $(function() {
+    window.prettyPrint && prettyPrint();
+    
+    var $sidenav = $('.bs-docs-sidenav');
+    $('.content h2').each(function(i, header) {
+      var $header = $(header);
+    
+      var li = $('<li><a href="#' + $header.attr('id') + '">' + $header.text() + '</a></li>')
+      $sidenav.append(li);
+    });
+    $('body').scrollspy('refresh');
+  })
+  </script>
+
+</body>
+</html>
