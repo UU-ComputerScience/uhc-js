@@ -39,7 +39,7 @@ module Jekyll
       end
 
       def render(context)
-        puts super
+        # puts super
         "<pre class=\"prettyprint linenums #{@lang.empty? ? '' : 'lang-'+@lang}\">#{h(super).strip}</pre>"
       end
   end

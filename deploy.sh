@@ -1,0 +1,1 @@
+jekyll --no-auto && rsync -r --exclude=.git _site/* ../uhc-js-pages

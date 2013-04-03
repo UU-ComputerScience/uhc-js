@@ -33,10 +33,15 @@ materials:
 * [Client-Side Haskell code](https://github.com/spockz/JCU/tree/master/resources/static/hjs) - Alessandro Vermeulen
 
 ## Demo
-The JCU app discussed in "Getting Rid of JavaScript with Haskell" has been put
-online by [Chris Done](http://chrisdone.com/).
+We have further developed the JCU app as discussed in "Getting Rid of
+Javascript with Haskell", it is now JavaScript only and we [put it
+online](http://uu-computerscience.github.com/JCU/) for your convenience. No 
+account creation is necessary for this version as it stores your data in the
+browser locally.
 
-Go to the [instance](http://jcu.chrisdone.com/login). And log in with username
+The original application is still online and graciously provided by [Chris
+Done](http://chrisdone.com/). For this instance you need to log in. Go to the
+[instance](http://jcu.chrisdone.com/login). And log in with username
 "uhcjsdemo@example.com" and password "123456". And check out the [source
 code](https://github.com/UU-ComputerScience/JCU). For installation instructions
 please refer to the section "Locations and Setup" in "Getting Rid of JavaScript
