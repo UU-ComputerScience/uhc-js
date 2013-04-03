@@ -1,1 +1,1 @@
-jekyll --no-auto && rsync -r --exclude=.git _site/* ../uhc-js-pages
+jekyll --no-auto && rsync -r --exclude=.git --exclude='deploy.sh' _site/* ../uhc-js-pages
