@@ -39,14 +39,6 @@ online](http://uu-computerscience.github.com/JCU/) for your convenience. No
 account creation is necessary for this version as it stores your data in the
 browser locally.
 
-The original application is still online and graciously provided by [Chris
-Done](http://chrisdone.com/). For this instance you need to log in. Go to the
-[instance](http://jcu.chrisdone.com/login). And log in with username
-"uhcjsdemo@example.com" and password "123456". And check out the [source
-code](https://github.com/UU-ComputerScience/JCU). For installation instructions
-please refer to the section "Locations and Setup" in "Getting Rid of JavaScript
-with Haskell".
-
 ## Need help?
 There are currently two major resources for help with UHC. The general [UHC
 documentation][uhc-extensive-doc] describes the usage of UHC in general and the
