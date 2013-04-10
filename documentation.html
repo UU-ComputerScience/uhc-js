@@ -78,11 +78,11 @@ cabal install uulib uuagc
 $> cd somewhere
 $> git clone git://github.com/UU-ComputerScience/uhc.git
 $> cd uhc
-$> git checkout js
 $> cd EHC
-$> autoconf
+$> autoconf      # optional, required only if configure does not work on your system
 $> ./configure
 $> make uhc
+$> make install  # requires root permission, depending on install location
 </pre>
 <p>Optionally perform a <code>make install</code>.</p>
 
