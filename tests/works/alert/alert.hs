@@ -3,5 +3,5 @@ main = do
   alert 123
 
 
-foreign import jscript "alert"
+foreign import js "alert"
   alert :: Int -> IO ()
